@@ -1,0 +1,4 @@
+name = "NBodySim"
+uuid = "1ffa36e2-5158-4886-8b75-83e001b15d13"
+version = "0.1.0"
+authors = ["Midyan Hamdoun <midyan.hamdoun@gmail.com>"]
