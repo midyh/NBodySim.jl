@@ -2,3 +2,11 @@ name = "NBodySim"
 uuid = "1ffa36e2-5158-4886-8b75-83e001b15d13"
 version = "0.1.0"
 authors = ["Midyan Hamdoun <midyan.hamdoun@gmail.com>"]
+
+[deps]
+Revise = "295af30f-e4ad-537b-8983-00126c2a3abe"
+StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
+
+[compat]
+Revise = "3.15.1"
+StaticArrays = "1.9.18"
