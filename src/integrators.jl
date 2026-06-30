@@ -3,6 +3,7 @@ abstract type Integrator end
 struct Euler <: Integrator end
 struct Leapfrog <: Integrator end
 struct RK4 <: Integrator end
+struct VelocityVerlet <: Integrator end
 
 # Euler integrator
 function step!(integrator::Euler, system::System, dt::Float64)
@@ -17,15 +18,16 @@ end
 
 # Leapfrog
 function step!(integrator::Leapfrog, system::System, dt::Float64)
+  dt2 = dt / 2
   accels = get_accelerations(system)
   for (body, a) ∈ zip(system.bodies, accels)
-    body.velocity += a * (dt / 2)
+    body.velocity += a * dt2
     body.position += body.velocity * dt
   end
 
   accels = get_accelerations(system)
   for (body, a) ∈ zip(system.bodies, accels)
-    body.velocity += a * (dt / 2)
+    body.velocity += a * dt2
   end
 end
 
@@ -84,5 +86,19 @@ function step!(integrator::RK4, system::System, dt::Float64)
     body.velocity += dt6 * (k1_v[i] + 2*k2_v[i] + 2*k3_v[i] + k4_v[i])
     body.position += dt6 * (k1_x[i] + 2*k2_x[i] + 2*k3_x[i] + k4_x[i])
     i += 1
+  end
+end
+
+# Velocity Verlet
+function step!(integrator::VelocityVerlet, system::System, dt::Float64)
+  accels = get_accelerations(system)
+
+  for (body, a) ∈ zip(system.bodies, accels)
+    body.position += body.velocity * dt + 0.5 * a * (dt^2)
+  end
+
+  accels_next = get_accelerations(system)
+  for (body, a, a_next) ∈ zip(system.bodies, accels, accels_next)
+    body.velocity += 0.5 * (a + a_next) * dt
   end
 end
