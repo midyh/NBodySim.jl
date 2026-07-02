@@ -2,9 +2,7 @@ module NBodySim
 
 using StaticArrays
 
-include("types.jl")
-include("dynamics.jl")
-include("integrators.jl")
+include("includes.jl")
 
 make_sun() = Body(
   SA[0.0, 0.0, 0.0],
