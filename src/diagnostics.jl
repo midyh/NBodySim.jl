@@ -21,16 +21,13 @@ end
 
 function total_energy(system::System, G::Float64=1.0)::Float64
   E_total = 0
-  for body ∈ system.bodies
-    E_total += 0.5 * body.mass * norm(body.velocity)^2
-    for body2 ∈ system.bodies
-      if body === body2
-        continue
-      end
 
-      E_total += (-G * body.mass * body2.mass) / (norm(body.position - body2.position))
+  for i ∈ 1:length(system.bodies)
+    E_total += 0.5 * system.bodies[i].mass * norm(system.bodies[i].velocity)^2
+    for j ∈ (i+1):length(system.bodies)
+      E_total += (-G * system.bodies[i].mass * system.bodies[j].mass) / (norm(system.bodies[i].position - system.bodies[j].position))
     end
   end
 
-  return E_total / 2
+  return E_total
 end
