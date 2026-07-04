@@ -56,19 +56,22 @@ end
 plot_energies(1000)
 
 function bench_performance(n_steps)
-  system = make_test_system()
+  euler_system = make_test_system()
+  leapfrog_system = make_test_system()
+  velver_system = make_test_system()
+  rk4_system = make_test_system()
 
   println("Euler")
-  display(@benchmark simulate_with_diagnostics($system, Euler(), 0.01, $n_steps))
+  display(@benchmark simulate_with_diagnostics($euler_system, Euler(), 0.01, $n_steps))
 
   println("\nLeapfrog")
-  display(@benchmark simulate_with_diagnostics($system, Leapfrog(), 0.01, $n_steps))
+  display(@benchmark simulate_with_diagnostics($leapfrog_system, Leapfrog(), 0.01, $n_steps))
 
   println("\nVelocity Verlet")
-  display(@benchmark simulate_with_diagnostics($system, VelocityVerlet(), 0.01, $n_steps))
+  display(@benchmark simulate_with_diagnostics($velver_system, VelocityVerlet(), 0.01, $n_steps))
 
   println("\nRK4")
-  display(@benchmark simulate_with_diagnostics($system, RK4(), 0.01, $n_steps))
+  display(@benchmark simulate_with_diagnostics($rk4_system, RK4(), 0.01, $n_steps))
 end
 
 results = bench_performance(100)
