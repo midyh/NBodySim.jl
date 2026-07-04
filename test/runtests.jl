@@ -21,21 +21,6 @@ make_test_system() = System([
   make_body2(),
 ])
 
-function simulate_with_diagnostics(system::System, integrator::Integrator, dt::Float64, n_steps::Int64)
-  momentums = SVector{3,Float64}[]
-  angulars = SVector{3,Float64}[]
-  energies = Float64[]
-
-  for _ ∈ 1:n_steps
-    step!(integrator, system, dt)
-    push!(momentums, total_momentum(system))
-    push!(angulars, total_angular_momentum(system))
-    push!(energies, total_energy(system))
-  end
-
-  return momentums, angulars, energies
-end
-
 @testset "Diagnostic functions" begin
   test_system = make_test_system()
   momentum = total_momentum(test_system)
