@@ -6,8 +6,8 @@ struct RK4 <: Integrator end
 struct VelocityVerlet <: Integrator end
 
 # Euler integrator
-function step!(integrator::Euler, system::System, dt::Float64)
-  accels = get_accelerations(system)
+function step!(integrator::Euler, system::System, dt::Float64, G::Float64=1.0)
+  accels = get_accelerations(system, G)
 
   for (body, a) ∈ zip(system.bodies, accels)
     old_v = body.velocity
@@ -17,25 +17,25 @@ function step!(integrator::Euler, system::System, dt::Float64)
 end
 
 # Leapfrog
-function step!(integrator::Leapfrog, system::System, dt::Float64)
+function step!(integrator::Leapfrog, system::System, dt::Float64, G::Float64=1.0)
   dt2 = dt / 2
-  accels = get_accelerations(system)
+  accels = get_accelerations(system, G)
   for (body, a) ∈ zip(system.bodies, accels)
     body.velocity += a * dt2
     body.position += body.velocity * dt
   end
 
-  accels = get_accelerations(system)
+  accels = get_accelerations(system, G)
   for (body, a) ∈ zip(system.bodies, accels)
     body.velocity += a * dt2
   end
 end
 
 # RK4
-function step!(integrator::RK4, system::System, dt::Float64)
+function step!(integrator::RK4, system::System, dt::Float64, G::Float64=1.0)
   dt2 = dt / 2
   dt6 = dt / 6
-  accels = get_accelerations(system)
+  accels = get_accelerations(system, G)
   k1_v = SVector{3,Float64}[]
   k1_x = SVector{3,Float64}[]
   system2 = System(Body[])
@@ -47,7 +47,7 @@ function step!(integrator::RK4, system::System, dt::Float64)
     push!(system2.bodies, new_body)
   end
 
-  accels = get_accelerations(system2)
+  accels = get_accelerations(system2, G)
   k2_v = SVector{3,Float64}[]
   k2_x = SVector{3,Float64}[]
   system3 = System(Body[])
@@ -60,7 +60,7 @@ function step!(integrator::RK4, system::System, dt::Float64)
     push!(system3.bodies, new_body)
   end
 
-  accels = get_accelerations(system3)
+  accels = get_accelerations(system3, G)
   k3_v = SVector{3,Float64}[]
   k3_x = SVector{3,Float64}[]
   system4 = System(Body[])
@@ -73,7 +73,7 @@ function step!(integrator::RK4, system::System, dt::Float64)
     push!(system4.bodies, new_body)
   end
 
-  accels = get_accelerations(system4)
+  accels = get_accelerations(system4, G)
   k4_v = SVector{3,Float64}[]
   k4_x = SVector{3,Float64}[]
   for (body, a, v) ∈ zip(system.bodies, accels, k3_v)
@@ -90,14 +90,14 @@ function step!(integrator::RK4, system::System, dt::Float64)
 end
 
 # Velocity Verlet
-function step!(integrator::VelocityVerlet, system::System, dt::Float64)
-  accels = get_accelerations(system)
+function step!(integrator::VelocityVerlet, system::System, dt::Float64, G::Float64=1.0)
+  accels = get_accelerations(system, G)
 
   for (body, a) ∈ zip(system.bodies, accels)
     body.position += body.velocity * dt + 0.5 * a * (dt^2)
   end
 
-  accels_next = get_accelerations(system)
+  accels_next = get_accelerations(system, G)
   for (body, a, a_next) ∈ zip(system.bodies, accels, accels_next)
     body.velocity += 0.5 * (a + a_next) * dt
   end

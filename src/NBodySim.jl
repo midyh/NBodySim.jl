@@ -29,16 +29,4 @@ make_integrator() = Leapfrog()
 
 main() = simulate(make_system(), make_integrator(), make_dt(), make_n_steps())
 
-function simulate(system::System, integrator::Integrator, dt::Float64, n_steps::Int64)
-  println("Using ", integrator)
-  for i ∈ 1:n_steps
-    step!(integrator, system, dt)
-    println("Step ", i, ": ")
-    for body ∈ system.bodies
-      println(body.position)
-    end
-    println()
-  end
-end
-
 end

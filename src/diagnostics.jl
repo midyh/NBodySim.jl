@@ -51,12 +51,13 @@ function simulate_for_visualization(
   system::System,
   integrator::Integrator,
   dt::Float64,
-  n_steps::Int64
+  n_steps::Int64,
+  G::Float64=1.0
 )::Vector{Vector{SVector{3,Float64}}}
   all_positions = [SVector{3,Float64}[] for _ in system.bodies]
 
   for _ ∈ 1:n_steps
-    step!(integrator, system, dt)
+    step!(integrator, system, dt, G)
 
     for (i, body) in enumerate(system.bodies)
       push!(all_positions[i], body.position)

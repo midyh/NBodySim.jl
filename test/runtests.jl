@@ -43,7 +43,6 @@ end
   initial_momentum = total_momentum(test_system)
   initial_angular = total_angular_momentum(test_system)
   initial_energy = total_energy(test_system)
-  println(initial_angular)
   momentums, angulars, energies = simulate_with_diagnostics(test_system, Euler(), 0.001, 100)
 
   for m ∈ momentums
