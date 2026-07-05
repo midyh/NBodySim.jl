@@ -46,3 +46,22 @@ function simulate_with_diagnostics(system::System, integrator::Integrator, dt::F
 
   return momentums, angulars, energies
 end
+
+function simulate_for_visualization(
+  system::System,
+  integrator::Integrator,
+  dt::Float64,
+  n_steps::Int64
+)::Vector{Vector{SVector{3,Float64}}}
+  all_positions = [SVector{3,Float64}[] for _ in system.bodies]
+
+  for _ ∈ 1:n_steps
+    step!(integrator, system, dt)
+
+    for (i, body) in enumerate(system.bodies)
+      push!(all_positions[i], body.position)
+    end
+  end
+
+  return all_positions
+end
