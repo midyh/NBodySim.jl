@@ -183,10 +183,10 @@ Not all integrators are expected to conserve all quantities equally well. The te
 
 | Integrator      | Angular momentum                         | Energy                   |
 | --------------- | ---------------------------------------- | ------------------------ |
-| Euler           | Drifts ~$3.46 \times 10^{-4}$ per step   | Drifts monotonically     |
-| Leapfrog        | Bounded at machine epsilon (~$10^{-16}$) | Bounded within $10^{-4}$ |
-| Velocity Verlet | Bounded at machine epsilon (~$10^{-16}$) | Bounded within $10^{-4}$ |
-| RK4             | Drifts ~$2.89 \times 10^{-5}$ per step   | Drifts monotonically     |
+| Euler           | Drifts ~ $3.46 \times 10^{-4}$ per step   | Drifts monotonically     |
+| Leapfrog        | Bounded at machine epsilon ~($10^{-16}$) | Bounded within $10^{-4}$ |
+| Velocity Verlet | Bounded at machine epsilon ~($10^{-16}$) | Bounded within $10^{-4}$ |
+| RK4             | Drifts ~ $2.89 \times 10^{-5}$ per step   | Drifts monotonically     |
 
 The drift ratio between Euler and RK4 (~12x) reflects their order difference: Euler is first-order, RK4 is fourth-order. Leapfrog and Velocity Verlet's machine-epsilon conservation is a consequence of their symplectic structure: they exactly preserve a modified Hamiltonian close to the true one.
 
