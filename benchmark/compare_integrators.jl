@@ -29,14 +29,43 @@ function plot_energies(n_steps)
   steps = 1:n_steps
 
   f = Figure()
+  leapfrog_drift = leapfrog .- leapfrog[1]
+  velover_drift = velover .- velover[1]
+
+  difference = abs.(leapfrog_drift .- velover_drift)
+
+  f = Figure()
+
   ax = Axis(f[1, 1],
-    title="Energy drift over iterations (symplectic only)",
+    title="Energy drift: Leapfrog vs Velocity Verlet",
     xlabel="Iterations",
-    ylabel="Energy",
+    ylabel="Energy drift",
   )
-  lines!(ax, steps, leapfrog .- leapfrog[1], label="Leapfrog", color=:red)
-  lines!(ax, steps, velover .- velover[1], label="Velocity Verlet", color=:green)
+
+  lines!(ax, steps, leapfrog_drift,
+    label="Leapfrog",
+    color=:red,
+  )
+
+  lines!(ax, steps, velover_drift,
+    label="Velocity Verlet",
+    color=:blue,
+    linestyle=:dash,
+  )
+
   axislegend(ax, position=:lt)
+
+  ax2 = Axis(f[2, 1],
+    title="Difference between integrators",
+    xlabel="Iterations",
+    ylabel="Absolute difference",
+  )
+
+  lines!(ax2, steps, difference,
+    color=:black,
+  )
+
+  display(f)
 
   f1 = Figure()
   ax1 = Axis(f1[1, 1],
@@ -51,9 +80,12 @@ function plot_energies(n_steps)
 
   display(f)
   display(f1)
+
+  save("docs/images/energy_drift_sym.png", f)
+  save("docs/images/energy_drift.png", f1)
 end
 
-plot_energies(1000)
+# plot_energies(1000)
 
 function bench_performance(n_steps)
   euler_system = make_test_system()
@@ -74,4 +106,4 @@ function bench_performance(n_steps)
   display(@benchmark simulate_with_diagnostics($rk4_system, RK4(), 0.01, $n_steps))
 end
 
-results = bench_performance(100)
+# results = bench_performance(100)

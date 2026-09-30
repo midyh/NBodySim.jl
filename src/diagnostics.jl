@@ -47,7 +47,7 @@ function simulate_with_diagnostics(system::System, integrator::Integrator, dt::F
   return momentums, angulars, energies
 end
 
-function simulate_for_visualization(
+function simulate(
   system::System,
   integrator::Integrator,
   dt::Float64,
