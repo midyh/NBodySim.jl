@@ -42,6 +42,51 @@ Julia was used in this project for the following reasons:
 - **Performance without sacrifice.** Julia runs at C-like speeds without leaving the high-level language. For an O($n^2$) force computation called thousands of times per simulation, it matters.
 - **StaticArrays.** Fixed-sized stack-allocated 3-vectors are the best fit for position and velocity data, no heap allocation per body per step.
 
+# Usage
+
+**Requirements:** Julia 1.8 or later.
+
+Clone the repository and instantiate the package:
+
+```sh
+git clone https://github.com/midyh/NBodySim.jl
+cd NBodySim.jl
+julia --project=.
+```
+
+Then in the Julia REPL:
+
+```julia
+] instantiate
+
+using NBodySim
+
+# Define bodies
+b1 = Body(SA[-0.97000436, 0.24308753, 0.0], SA[0.93240737/2, 0.86473146/2, 0.0], 1.0)
+b2 = Body(SA[0.97000436, -0.24308753, 0.0], SA[0.93240737/2, 0.86473146/2, 0.0], 1.0)
+b3 = Body(SA[0.76, 0.0, 0.0], SA[-0.93240737, -0.86473146, 0.0], 1.0)
+system = System([b1, b2, b3])
+
+# Run simulation, swap integrator with zero other changes
+s = simulate(system, Leapfrog(), 0.01, 1000)
+
+# Create an animation from the simulation
+animate(s)
+```
+
+To run the test suite:
+
+```sh
+julia --project=. -e "using Pkg; Pkg.test()"
+```
+
+To reproduce the visualizations, run the scripts in `examples/`:
+
+```sh
+julia --project=. examples/figure8.jl
+julia --project=. examples/solar_system.jl
+```
+
 # Architecture
 
 ## Core Types
@@ -167,6 +212,7 @@ $$\vec{p}_{total} = \sum_i m_i \vec{v}_i$$
 $$\vec{L}_{total} = \sum_i m_i \left( \vec{x}_i \times \vec{v}_i \right)$$
 
 **Total energy:**
+
 ```math
 E = \sum_i \frac{1}{2} m_i |\vec{v}_i|^2 - \sum_{i < j} \frac{G m_i m_j}{|\vec{x}_i - \vec{x}_j|}
 ```
@@ -185,10 +231,10 @@ Not all integrators are expected to conserve all quantities equally well. The te
 
 | Integrator      | Angular momentum                         | Energy                   |
 | --------------- | ---------------------------------------- | ------------------------ |
-| Euler           | Drifts ~ $3.46 \times 10^{-4}$ per step   | Drifts monotonically     |
+| Euler           | Drifts ~ $3.46 \times 10^{-4}$ per step  | Drifts monotonically     |
 | Leapfrog        | Bounded at machine epsilon ~($10^{-16}$) | Bounded within $10^{-4}$ |
 | Velocity Verlet | Bounded at machine epsilon ~($10^{-16}$) | Bounded within $10^{-4}$ |
-| RK4             | Drifts ~ $2.89 \times 10^{-5}$ per step   | Drifts monotonically     |
+| RK4             | Drifts ~ $2.89 \times 10^{-5}$ per step  | Drifts monotonically     |
 
 The drift ratio between Euler and RK4 (~12x) reflects their order difference: Euler is first-order, RK4 is fourth-order. Leapfrog and Velocity Verlet's machine-epsilon conservation is a consequence of their symplectic structure: they exactly preserve a modified Hamiltonian close to the true one.
 
@@ -213,51 +259,6 @@ Performance was measured using `BenchmarkTools.jl`'s `@benchmark` macro on a fre
 | RK4             | X ms        | 4                          |
 
 The timing ratio between integrators tracks closely with their force evaluation count — confirming that `get_accelerations` dominates the per-step cost, as expected for an O(N²) pairwise computation. Leapfrog and Velocity Verlet are approximately 2x the cost of Euler; RK4 approximately 4x. Given that Leapfrog delivers symplectic conservation at only 2x the cost of Euler, it is the natural default choice for long-running simulations.
-
-# Usage
-
-**Requirements:** Julia 1.8 or later.
-
-Clone the repository and instantiate the package:
-
-```sh
-git clone https://github.com/midyh/NBodySim.jl
-cd NBodySim.jl
-julia --project=.
-```
-
-Then in the Julia REPL:
-
-```julia
-] instantiate
-
-using NBodySim
-
-# Define bodies
-b1 = Body(SA[-0.97000436, 0.24308753, 0.0], SA[0.93240737/2, 0.86473146/2, 0.0], 1.0)
-b2 = Body(SA[0.97000436, -0.24308753, 0.0], SA[0.93240737/2, 0.86473146/2, 0.0], 1.0)
-b3 = Body(SA[0.76, 0.0, 0.0], SA[-0.93240737, -0.86473146, 0.0], 1.0)
-system = System([b1, b2, b3])
-
-# Run simulation, swap integrator with zero other changes
-s = simulate(system, Leapfrog(), 0.01, 1000)
-
-# Create an animation from the simulation
-animate(s)
-```
-
-To run the test suite:
-
-```sh
-julia --project=. -e "using Pkg; Pkg.test()"
-```
-
-To reproduce the visualizations, run the scripts in `examples/`:
-
-```sh
-julia --project=. examples/figure8.jl
-julia --project=. examples/solar_system.jl
-```
 
 # Project Structure
 
