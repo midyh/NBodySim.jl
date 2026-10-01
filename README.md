@@ -253,10 +253,10 @@ Performance was measured using `BenchmarkTools.jl`'s `@benchmark` macro on a fre
 
 | Integrator      | Median time | Force evaluations per step |
 | --------------- | ----------- | -------------------------- |
-| Euler           | X ms        | 1                          |
-| Leapfrog        | X ms        | 2                          |
-| Velocity Verlet | X ms        | 2                          |
-| RK4             | X ms        | 4                          |
+| Euler           | 48.625 μs   | 1                          |
+| Leapfrog        | 79.75 μs    | 2                          |
+| Velocity Verlet | 78 μs       | 2                          |
+| RK4             | 373 μs      | 4                          |
 
 The timing ratio between integrators tracks closely with their force evaluation count — confirming that `get_accelerations` dominates the per-step cost, as expected for an O(N²) pairwise computation. Leapfrog and Velocity Verlet are approximately 2x the cost of Euler; RK4 approximately 4x. Given that Leapfrog delivers symplectic conservation at only 2x the cost of Euler, it is the natural default choice for long-running simulations.
 
