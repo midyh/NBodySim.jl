@@ -167,7 +167,9 @@ $$\vec{p}_{total} = \sum_i m_i \vec{v}_i$$
 $$\vec{L}_{total} = \sum_i m_i \left( \vec{x}_i \times \vec{v}_i \right)$$
 
 **Total energy:**
-$$E = \sum_i \frac{1}{2} m_i |\vec{v}_i|^2 - \sum_{i < j} \frac{G m_i m_j}{|\vec{x}_i - \vec{x}_j|}$$
+```math
+E = \sum_i \frac{1}{2} m_i |\vec{v}_i|^2 - \sum_{i < j} \frac{G m_i m_j}{|\vec{x}_i - \vec{x}_j|}
+```
 
 ## Test Setup
 
