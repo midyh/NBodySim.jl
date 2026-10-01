@@ -22,3 +22,4 @@ LocalPreferences.toml
 JuliaLocalPreferences.toml
 
 .vscode/
+out/
